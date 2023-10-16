@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div>
+    <div className="mx-0.5">
       <Button>Button</Button>
     </div>
   );
