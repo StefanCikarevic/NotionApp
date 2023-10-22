@@ -1,17 +1,28 @@
 "use client";
 import React, { ElementRef, useEffect, useRef, useState } from "react";
-import { ChevronsLeft, MenuIcon } from "lucide-react";
+import {
+  ChevronsLeft,
+  MenuIcon,
+  PlusCircle,
+  Search,
+  Settings,
+} from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import UserItem from "@/app/(main)/_components/user-item";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import Item from "@/app/(main)/_components/item";
+import { router } from "next/client";
+import { toast } from "sonner";
 
 const Navigation = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
+  const router = useRouter();
   const documents = useQuery(api.documents.get);
+  const create = useMutation(api.documents.create);
 
   useEffect(() => {
     if (isMobile) {
@@ -87,17 +98,17 @@ const Navigation = () => {
     }
   };
 
-  // const handleCreate = () => {
-  //   const promise = create({ title: "Untitled" }).then((documentId) =>
-  //     router.push(`/documents/${documentId}`)
-  //   );
-  //
-  //   toast.promise(promise, {
-  //     loading: "Creating a new note...",
-  //     success: "New note created!",
-  //     error: "Failed to create a new note.",
-  //   });
-  // };
+  const handleCreate = () => {
+    const promise = create({ title: "Untitled" }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
+
+    toast.promise(promise, {
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
+    });
+  };
 
   return (
     <>
@@ -121,6 +132,9 @@ const Navigation = () => {
         </div>
         <div>
           <UserItem />
+          <Item onClick={() => {}} label="Search" icon={Search} isSearch />
+          <Item onClick={() => {}} label="Settings" icon={Settings} />
+          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
           {documents?.map((document) => (
